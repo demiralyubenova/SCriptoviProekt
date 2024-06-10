@@ -1,18 +1,25 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from models import Base, User, Post, Comment
-
+from sqlalchemy.orm import relationship, sessionmaker, scoped_session
 DATABASE_URL = 'sqlite:///socialmedia.db'
 
 class DBInteractor:
-    def __init__(self, database_url=DATABASE_URL):
+    def __init__(self, database_url='sqlite:///socialmedia.db'):
         self.engine = create_engine(database_url)
-        
-        self.Session = sessionmaker(bind=self.engine)
+        self.Session = scoped_session(sessionmaker(bind=self.engine)) # to prevent multiple sessions
 
-
-    def setup_db(self): # run only if the db is not init-ed
+    def setup_db(self):
         Base.metadata.create_all(self.engine)
+
+    def is_db_set_up(self):
+        session = self.Session()
+        try:
+            session.query(User).first()
+            return True
+        except OperationalError:
+            return False
+        finally:
+            session.close()
 
     class UserRepository:
         def __init__(self, session):
@@ -30,7 +37,6 @@ class DBInteractor:
             self.session.commit()
             return new_user
 
-        
         def update(self, user, username=None, password=None):
             if username:
                 user.username = username
@@ -39,7 +45,7 @@ class DBInteractor:
             self.session.commit()
             return user
 
-        def delete(self, user):  # ask if it should query the object here or delete the object directly
+        def delete(self, user):
             self.session.delete(user)
             self.session.commit()
 
@@ -108,9 +114,8 @@ class DBInteractor:
     def get_comment_repository(self):
         session = self.Session()
         return self.CommentRepository(session)
-"to do -> make a function which chrcks if the db is set up"
-is_db__set_up = False
+
 db_interactor = DBInteractor()
 
-if is_db__set_up :
+if not db_interactor.is_db_set_up():
     db_interactor.setup_db()

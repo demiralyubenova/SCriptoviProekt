@@ -29,7 +29,7 @@ def check_session():
         return jsonify({"error": "Invalid or expired token"}), 401
 
     request.user = sessions.get_token(token)
-    usr_obj = db_interactor.get_usersitory().get_by_username(request.user.username)
+    usr_obj = db_interactor.get_user_repository().get_by_username(request.user.username)
     request.user.user_id = usr_obj.id
 
 @app.route('/register', methods=['POST'])
@@ -37,7 +37,7 @@ def register():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    user = db_interactor.get_usersitory()
+    user = db_interactor.get_user_repository()
     user = user.create(username, password)
     return jsonify({"id": user.id, "username": user.username}), 201
 
@@ -46,7 +46,7 @@ def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    user = db_interactor.get_usersitory()
+    user = db_interactor.get_user_repository()
     user = user.get_by_username(username)
     if user and user.password == password:
         token = sessions.issue_new_token(user.username)
@@ -55,7 +55,7 @@ def login():
 
 @app.route('/users', methods=['GET'])
 def get_all_users():
-    user = db_interactor.get_usersitory()
+    user = db_interactor.get_user_repository()
     users = user.get_all()
     return jsonify([{"id": user.id, "username": user.username} for user in users]), 200
 
@@ -90,7 +90,7 @@ def create_comment(post_id):
     user_id = request.user.user_id
     data = request.get_json()
     content = data.get('content')
-    comments = db_interactor.get_commentssitory()
+    comments = db_interactor.get_comments_repository()
     comment = comments.create(user_id, post_id, content)
     return jsonify({"id": comment.id, "content": comment.content}), 201
 
@@ -140,7 +140,7 @@ def delete_post(post_id):
 
 @app.route('/posts/<int:post_id>/comments', methods=['GET'])
 def get_comments(post_id):
-    comments = db_interactor.get_commentssitory()
+    comments = db_interactor.get_comments_repository()
     comments = comments.get_by_post_id(post_id)
     return jsonify([{"id": comment.id, "content": comment.content} for comment in comments]), 200
 
