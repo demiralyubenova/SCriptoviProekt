@@ -16,7 +16,7 @@ class DBInteractor:
         try:
             session.query(User).first()
             return True
-        except OperationalError:
+        except Exception:
             return False
         finally:
             session.close()
