@@ -14,9 +14,9 @@ document.getElementById('signupForm').addEventListener('submit', async function(
 
     try {
         const userObj = await api.user.register(username, password);
+        alert(JSON.stringify(userObj))
         console.log("userObj", userObj);
-        // Optionally, you might want to log the user in directly after signup or show a success message
-        // Redirect or show the next page
+        
     } catch (error) {
         console.error('Error:', error.message);
     }

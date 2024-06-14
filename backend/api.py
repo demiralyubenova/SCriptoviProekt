@@ -38,6 +38,8 @@ def register():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+    if (len(password) < 6):
+        return jsonify({"err":"password must have a length of atleast 7"})
     user = db_interactor.get_user_repository()
     user = user.create(username, password)
     return jsonify({"id": user.id, "username": user.username}), 201
