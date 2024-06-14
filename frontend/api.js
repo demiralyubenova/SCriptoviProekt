@@ -9,7 +9,7 @@ class ApiInteractor {
         const headers = {
             'Content-Type': 'application/json',
         };
-        const token  =storage.getToken()
+        const token  = storage.getToken()
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
             }

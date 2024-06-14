@@ -29,6 +29,7 @@ def check_session():
         return jsonify({"error": "Invalid or expired token"}), 401
 
     request.user = sessions.get_token(token)
+    print(request.user)
     usr_obj = db_interactor.get_user_repository().get_by_username(request.user.username)
     request.user.user_id = usr_obj.id
 
