@@ -14,3 +14,6 @@
 
 ## FRONTEND
  - use some kind iof web server top serve the `frontend` directory (developmennt was made using `live server` extension in `vscode`)
+
+
+

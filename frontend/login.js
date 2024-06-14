@@ -16,7 +16,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         console.log("tokenObj", tokenObj);
         // Assuming you have a method to save the token
         storage.saveToken(tokenObj.access_token);
-        // Redirect or show the next page
+        // Redirect 
+        window.location.href="/frontend/posts.html"
     } catch (error) {
         console.error('Error:', error.message);
     }

@@ -16,6 +16,9 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         const userObj = await api.user.register(username, password);
         alert(JSON.stringify(userObj))
         console.log("userObj", userObj);
+
+        window.location.href = "/frontend/signin.html"
+
         
     } catch (error) {
         console.error('Error:', error.message);
