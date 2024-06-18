@@ -9,6 +9,7 @@ console.log("loaded js");
 function createPostElement(post) {
     const postElement = document.createElement('div');
     postElement.className = 'post';
+    postElement.dataset.postId = post.id;
 
     const contentElement = document.createElement('p');
     contentElement.textContent = post.content;
@@ -22,8 +23,7 @@ function createPostElement(post) {
     likeButton.textContent = 'Like';
     likeButton.addEventListener('click', async () => {
         try {
-            const token = storage.getToken(); // Assumes the token is stored in localStorage
-            const response = await api.post.likePost(post.id, token);
+            const response = await api.post.likePost(post.id);
             likesElement.textContent = `Likes: ${response.likes}`;
         } catch (error) {
             console.error('Error liking post:', error.message);
@@ -31,15 +31,31 @@ function createPostElement(post) {
     });
     postElement.appendChild(likeButton);
 
+    const redactButton = document.createElement('button');
+    redactButton.textContent = 'Redact';
+    redactButton.addEventListener('click', () => {
+        const newContent = prompt('Edit your post:', post.content);
+        if (newContent !== null) {
+            updatePost(post.id, newContent);
+        }
+    });
+    postElement.appendChild(redactButton);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to delete this post?')) {
+            deletePost(post.id);
+        }
+    });
+    postElement.appendChild(deleteButton);
+
     return postElement;
 }
 
-// Function to load and display posts
 async function loadPosts() {
     try {
-        const token = storage.getToken(); // Assumes the token is stored in localStoragezz
-        const posts = await api.post.getAllPosts(token);
-
+        const posts = await api.post.getAllPosts();
         const postsContainer = document.getElementById('posts-container');
         postsContainer.innerHTML = ''; // Clear previous posts
 
@@ -52,7 +68,6 @@ async function loadPosts() {
     }
 }
 
-// Function to handle new post submission
 async function handleCreatePost(event) {
     event.preventDefault();
     const content = document.getElementById('post-content').value;
@@ -63,62 +78,43 @@ async function handleCreatePost(event) {
     }
 
     try {
-        const token = storage.getToken(); // Assumes the token is stored in localStorage
-        const newPost = await api.post.createPost({ content }, token);
-
+        const newPost = await api.post.createPost(content);
         const postsContainer = document.getElementById('posts-container');
         const postElement = createPostElement(newPost);
         postsContainer.prepend(postElement); // Add new post at the top
-            
+
         document.getElementById('create-post-form').reset(); // Clear the form
     } catch (error) {
         console.error('Error creating post:', error.message);
     }
 }
 
-// Example function to initialize the app
+async function updatePost(postId, content) {
+    try {
+        await api.post.updatePost(postId, content);
+        loadPosts();
+    } catch (error) {
+        console.error('Error updating post:', error.message);
+    }
+}
+
+async function deletePost(postId) {
+    try {
+        await api.post.deletePost(postId);
+        loadPosts();
+    } catch (error) {
+        console.error('Error deleting post:', error.message);
+    }
+}
+
 async function initApp() {
     try {
-        // Perform login and registration here if needed
         await loadPosts();
     } catch (error) {
         console.error('Error initializing app:', error.message);
     }
 }
 
-// Initialize the app
-initApp().catch(error => console.error('Error in initApp:', error.message));
-
-// Add event listener for creating posts
 document.getElementById('create-post-form').addEventListener('submit', handleCreatePost);
 
-// Add some styling to the posts
-const style = document.createElement('style');
-style.textContent = `
-    #create-post-container {
-        margin-bottom: 20px;
-    }
-    .post {
-        border: 1px solid #ccc;
-        padding: 16px;
-        margin-bottom: 16px;
-        border-radius: 8px;
-        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
-    }
-    .post p {
-        margin: 8px 0;
-    }
-    .post button {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 4px;
-        background-color: #007BFF;
-        color: #fff;
-        cursor: pointer;
-    }
-    .post button:hover {
-        background-color: #0056b3;
-    }
-`;
-document.head.appendChild(style);
+initApp().catch(error => console.error('Error in initApp:', error.message));

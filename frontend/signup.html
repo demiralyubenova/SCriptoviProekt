@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Page</title>
+    <title>Login Page</title>
     <style>
         body {
             display: flex;
@@ -13,28 +13,28 @@
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
         }
-        .signup-container {
+        .login-container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .signup-container h2 {
+        .login-container h2 {
             margin-bottom: 20px;
             text-align: center;
         }
-        .signup-container label {
+        .login-container label {
             display: block;
             margin-bottom: 8px;
         }
-        .signup-container input {
+        .login-container input {
             width: 100%;
             padding: 8px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        .signup-container button {
+        .login-container button {
             width: 100%;
             padding: 10px;
             background-color: #007bff;
@@ -43,20 +43,20 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .signup-container button:hover {
+        .login-container button:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="signup-container">
-        <h2>Signup</h2>
-        <form id="signupForm">
+    <div class="login-container">
+        <h2>Sign up</h2>
+        <form id="loginForm">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit">Signup</button>
+            <button type="submit">Sign up</button>
         </form>
     </div>
     <script type="module" src="./signup.js"></script>

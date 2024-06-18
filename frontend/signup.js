@@ -1,7 +1,6 @@
-// signup.js
 import { getApi } from './api.js';
-
-document.getElementById('signupForm').addEventListener('submit', async function(event) {
+import { storage } from './client_storage.js';
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
     event.preventDefault(); // Prevent the form from submitting the traditional way
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -13,13 +12,15 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     console.log(api)
 
     try {
-        const userObj = await api.user.register(username, password);
-        alert(JSON.stringify(userObj))
-        console.log("userObj", userObj);
+        const res = await api.user.register(username, password);
+        console.log("res", res);
+        if(!(res.id)){ // check if the response is succesful
+        alert(JSON.stringify(res.error)) 
+        console.log("jijiij")
+        return
+    }  
+       window.location.href="/frontend/signin.html"
 
-        window.location.href = "/frontend/signin.html"
-
-        
     } catch (error) {
         console.error('Error:', error.message);
     }
